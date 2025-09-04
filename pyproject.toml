@@ -1,0 +1,15 @@
+[project]
+name = "gridwalker"
+version = "0.1.0"
+description = "A tiny MVC demo game: move @ around a grid with WASD. Shows MVC, input abstraction, and config strategy."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+dependencies = []
+
+[project.scripts]
+gridwalker = "gridwalker.app:run"
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
