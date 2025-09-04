@@ -29,6 +29,5 @@ class GameState:
             self.x = min(self.cfg.width - 1, self.x + 1)
 
     def tick(self) -> None:
-        # placeholder for time-based logic
         if not self.paused:
             pass

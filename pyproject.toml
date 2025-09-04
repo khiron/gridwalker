@@ -8,7 +8,12 @@ authors = [{ name = "Your Name", email = "you@example.com" }]
 dependencies = []
 
 [project.scripts]
-gridwalker = "gridwalker.app:run"
+gridwalker = "gridwalker.cli:main"
+gridwalker-term = "gridwalker.app:run"
+gridwalker-pygame = "gridwalker.app_pygame:run"
+
+[project.optional-dependencies]
+pygame = ["pygame>=2.5"]
 
 [tool.pytest.ini_options]
 addopts = "-q"

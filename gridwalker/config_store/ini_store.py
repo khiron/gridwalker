@@ -14,7 +14,7 @@ class IniConfigStore(ConfigStore):
         cp.read(self.path)
         return GameConfig(
             width=cp.getint('game', 'width', fallback=20),
-            height=cp.getint('game', 'height', fallback=10),
+            height=cp.getint('game', 'height', fallback=12),
             tick_ms=cp.getint('game', 'tick_ms', fallback=100),
         )
 
