@@ -4,7 +4,7 @@ from .base import InputDevice
 from ..actions import Action
 
 if os.name == 'nt':
-    import msvcrt
+    import msvcrt # Windows-specific
 
     class KeyboardController(InputDevice):
         def poll(self) -> Iterable[Action]:
@@ -38,8 +38,8 @@ else:
     class KeyboardController(InputDevice):
         def __init__(self) -> None:
             self._fd = sys.stdin.fileno()
-            self._old = termios.tcgetattr(self._fd)
-            tty.setcbreak(self._fd)
+            self._old = termios.tcgetattr(self._fd) # Save old terminal settings
+            tty.setcbreak(self._fd) # Set terminal to cbreak mode where characters are available immediately rather than after 'enter'
 
         def poll(self) -> Iterable[Action]:
             actions: List[Action] = []
@@ -60,4 +60,4 @@ else:
             return actions
 
         def close(self) -> None:
-            termios.tcsetattr(self._fd, termios.TCSADRAIN, self._old)
+            termios.tcsetattr(self._fd, termios.TCSADRAIN, self._old) # Restore terminal settings

@@ -1,74 +1,50 @@
-import argparse
-import importlib.util
 from pathlib import Path
+import typer # simple CLI library built on Click that supports type hints
 
-from .config_store.json_store import JsonConfigStore
-from .model.state import GameState
-from .view.terminal import TerminalRenderer
 from .controller.keyboard import KeyboardController
-from .view.pygame3d import Pygame3DRenderer
 from .controller.pygame_keys import PygameKeyboardController
+from .model.gridwalker import GridWalker
+from .view.pygame3d import Pygame3DRenderer
+from .view.terminal import TerminalRenderer
+from .config_store.base import ConfigStore
+from .config_store.json_store import JsonConfigStore
+from .config_store.ini_store import IniConfigStore
 
-def _run_terminal() -> None:
-    cfg_path = Path.home() / '.gridwalker.json'
-    cfg = JsonConfigStore(cfg_path).load()
-    state = GameState(cfg=cfg, x=cfg.width // 2, y=cfg.height // 2)
-    renderer = TerminalRenderer()
-    controller = KeyboardController()
-    import time
-    tick = cfg.tick_ms / 1000.0
-    last = time.monotonic()
-    try:
-        while state.running:
-            for action in controller.poll():
-                state.apply(action)
-            now = time.monotonic()
-            if now - last >= tick:
-                state.tick()
-                last = now
-            renderer.render(state)
-            time.sleep(0.016)
-    finally:
-        controller.close()
-        renderer.close()
+app = typer.Typer(add_completion=False, help="Gridwalker — MVC demo")
 
-def _run_pygame() -> None:
-    cfg_path = Path.home() / '.gridwalker.json'
-    cfg = JsonConfigStore(cfg_path).load()
-    state = GameState(cfg=cfg, x=cfg.width // 2, y=cfg.height // 2)
-    renderer = Pygame3DRenderer()
-    controller = PygameKeyboardController()
-    import time
-    tick = cfg.tick_ms / 1000.0
-    last = time.monotonic()
-    try:
-        while state.running:
-            for action in controller.poll():
-                state.apply(action)
-            now = time.monotonic()
-            if now - last >= tick:
-                state.tick()
-                last = now
-            renderer.render(state)
-    finally:
-        controller.close()
-        renderer.close()
+def _make_store(backend: str) -> ConfigStore:
+    home = Path.home()
+    if backend.lower() == "ini":
+        return IniConfigStore(home / ".gridwalker.ini")
+    return JsonConfigStore(home / ".gridwalker.json")
 
-def main(argv=None) -> None:
-    parser = argparse.ArgumentParser(description="Gridwalker — MVC demo")
-    parser.add_argument("--view", choices=["auto", "terminal", "pygame"], default="auto",
-                        help="Default: auto (pygame if installed, else terminal).")
-    args = parser.parse_args(argv)
-    if args.view == "pygame":
-        _run_pygame()
-        return
-    if args.view == "terminal":
-        _run_terminal()
-        return
-    has_pygame = importlib.util.find_spec("pygame") is not None
-    if has_pygame:
-        _run_pygame()
-    else:
-        print("pygame not found — falling back to terminal view. "
-              "Install with: pip install '.[pygame]' (quote on zsh).")
-        _run_terminal()
+@app.command()
+def main(
+    view: str = typer.Option(
+        "terminal", # default option 
+        "--view",
+        "-v",
+        help="Which view to run: terminal | pygame",
+        metavar="VIEW",
+        show_default=True,
+    ),
+    config_backend: str = typer.Option(
+        "json",
+        "--config-backend",
+        "-c",
+        help="Where to store config: json | ini",
+        metavar="BACKEND",
+        show_default=True,
+    ),
+) -> None:
+    """ Run Gridwalker. By default it will choose a terminal mode game board and W/A/S/D keyboard controls."""
+    store = _make_store(config_backend) # a config store uses the strategy pattern
+    model = GridWalker(store) # use Dependency Injection (DI) to give the model a strategy for persisting configuration    
+    v = view.lower()
+    if v == "terminal":
+        model.run(view=TerminalRenderer(), controller=KeyboardController()) # use Dependency Injection to pass the view and controller to the model
+    elif v == "pygame":
+        model.run(view=Pygame3DRenderer(), controller=PygameKeyboardController())
+
+if __name__ == "__main__": # if run as a script then run the CLI
+    app()

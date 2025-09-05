@@ -12,7 +12,7 @@ Two views ship: a **terminal** view and an **isometric (3D-ish)** pygame view.
 uv pip install -e .
 gridwalker                 # auto: pygame if installed, else terminal
 gridwalker --view terminal # force terminal
-gridwalker --view pygame   # force pygame (requires extra)
+gridwalker --view pygame   # force pygame 
 ```
 
 ---
