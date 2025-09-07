@@ -1,7 +1,7 @@
 import pygame
 from typing import Iterable, List
 from .base import InputDevice
-from ..actions import Action
+from gridwalker.actions import Action
 
 class PygameKeyboardController(InputDevice):
     def __init__(self) -> None:

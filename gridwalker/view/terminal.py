@@ -1,5 +1,5 @@
 import sys
-from ..model.state import GameState
+from gridwalker.model.state import GameState
 from .base import Renderer
 
 def _clear():

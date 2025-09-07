@@ -1,6 +1,6 @@
 import pygame
 from .base import Renderer
-from ..model.state import GameState
+from gridwalker.model.state import GameState
 
 class Pygame3DRenderer(Renderer):
     def __init__(self, width_px: int = 960, height_px: int = 720, title: str = "Gridwalker 3D"):

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from ..model.state import GameState
+from gridwalker.model.state import GameState
 
 class Renderer(ABC):
     @abstractmethod
