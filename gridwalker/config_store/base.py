@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from ..model.config import GameConfig
+from gridwalker.model.config import GameConfig
 
 class ConfigStore(ABC):
     @abstractmethod

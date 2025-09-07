@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from .config import GameConfig
-from ..actions import Action
+from gridwalker.actions import Action
 
 @dataclass
 class GameState:

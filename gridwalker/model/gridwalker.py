@@ -1,7 +1,7 @@
 import time
-from ..controller.base import InputDevice
-from ..view.base import Renderer
-from ..config_store.base import ConfigStore
+from gridwalker.controller.base import InputDevice
+from gridwalker.view.base import Renderer
+from gridwalker.config_store.base import ConfigStore
 from .state import GameState
 
 class GridWalker:

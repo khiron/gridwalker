@@ -1,7 +1,7 @@
 import os
 from typing import Iterable, List
 from .base import InputDevice
-from ..actions import Action
+from gridwalker.actions import Action
 
 if os.name == 'nt':
     import msvcrt # Windows-specific

@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from ..model.config import GameConfig
+from gridwalker.model.config import GameConfig
 from .base import ConfigStore
 
 class JsonConfigStore(ConfigStore):
